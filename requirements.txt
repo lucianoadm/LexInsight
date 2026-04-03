@@ -8,3 +8,12 @@ textblob>=0.18,<0.19
 
 requests<3
 urllib3<2.1
+
+pandas
+spacy
+nltk
+textblob
+streamlit
+matplotlib
+seaborn
+wordcloud
