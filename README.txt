@@ -92,27 +92,3 @@ git clone https://github.com/lucianoadm/LexInsight.git
 cd LexInsight
 pip install -r requirements.txt
 streamlit run app.py
-
-
----
-
-# 🎯 O QUE MUDOU (VISÃO ESTRATÉGICA)
-
-Sua versão:
-- boa explicação
-- mas genérica
-
-Nova versão:
-- vende o problema ✔️  
-- mostra solução ✔️  
-- demonstra arquitetura ✔️  
-- posiciona você como analista ✔️  
-
----
-
-# 💡 AJUSTE FINAL (RECOMENDO MUITO)
-
-Adicione no topo do README:
-
-```markdown
-🔗 Demo: https://SEU-LINK-STREAMLIT
