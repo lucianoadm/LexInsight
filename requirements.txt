@@ -1,8 +1,8 @@
-pandas
-spacy
-nltk
-textblob
 streamlit
 matplotlib
-seaborn
+spacy
+textblob
 wordcloud
+reportlab
+requests<3
+urllib3<2.1
