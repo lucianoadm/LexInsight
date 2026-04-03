@@ -4,3 +4,4 @@ matplotlib
 spacy
 wordcloud
 textblob
+nltk
