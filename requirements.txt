@@ -1,8 +1,6 @@
-pandas
-spacy
-nltk
-textblob
 streamlit
+pandas
 matplotlib
-seaborn
+spacy
 wordcloud
+https://github.com
