@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 import spacy
 from textblob import TextBlob
-from nltk.corpus import stopwords
+
 from assets.civil_lexicon import TERMOS_CIVIS_NEUTROS
 
 # ======================================================
@@ -14,7 +14,6 @@ BASE_DIR = Path(__file__).resolve().parent
 LEXICO_NEG = pd.read_csv(BASE_DIR / "assets" / "lexico_negativo.csv")
 LEXICO_POS = pd.read_csv(BASE_DIR / "assets" / "lexico_positivo.csv")
 
-# normalização defensiva
 LEXICO_NEG["termo"] = LEXICO_NEG["termo"].str.lower()
 LEXICO_POS["termo"] = LEXICO_POS["termo"].str.lower()
 
@@ -27,7 +26,10 @@ LEXICO_POS_DICT = dict(zip(LEXICO_POS["termo"], LEXICO_POS["peso"]))
 def analisar_sentimento_hibrido(texto: str) -> float:
     texto = texto.lower()
 
-    score_modelo = TextBlob(texto).sentiment.polarity
+    try:
+        score_modelo = TextBlob(texto).sentiment.polarity
+    except Exception:
+        score_modelo = 0.0
 
     ajuste = 0.0
     hits = 0
@@ -43,9 +45,8 @@ def analisar_sentimento_hibrido(texto: str) -> float:
             hits += 1
 
     if hits > 0:
-        ajuste = ajuste / hits
+        ajuste /= hits
 
-    # peso dinâmico
     if abs(score_modelo) < 0.05 and hits > 0:
         peso_lexico = 0.7
         peso_modelo = 0.3
@@ -54,23 +55,33 @@ def analisar_sentimento_hibrido(texto: str) -> float:
         peso_modelo = 0.6
 
     score_final = (score_modelo * peso_modelo) + (ajuste * peso_lexico)
-
     return max(min(score_final, 1.0), -1.0)
 
 # ======================================================
-# CONFIGURAÇÃO NLP
+# NLP — LAZY LOADING (CRÍTICO PARA O CLOUD)
 # ======================================================
-nlp = spacy.load(
-    "pt_core_news_sm",
-    disable=["ner", "parser", "textcat"]
-)
+_NLP = None
+_STOP_WORDS = None
 
-stop_words = set(stopwords.words("portuguese"))
-stop_words_juridicas = {
-    "autos", "processo", "deferido", "indeferido",
-    "vossa", "excelencia", "data", "venia"
-}
-stop_words.update(stop_words_juridicas)
+def get_nlp():
+    global _NLP, _STOP_WORDS
+
+    if _NLP is None:
+        _NLP = spacy.load(
+            "pt_core_news_sm",
+            disable=["ner", "parser", "textcat"]
+        )
+
+        # stopwords nativas do spaCy (Cloud‑safe)
+        _STOP_WORDS = _NLP.Defaults.stop_words.copy()
+
+        stop_words_juridicas = {
+            "autos", "processo", "deferido", "indeferido",
+            "vossa", "excelencia", "data", "venia"
+        }
+        _STOP_WORDS.update(stop_words_juridicas)
+
+    return _NLP, _STOP_WORDS
 
 # ======================================================
 # ETAPA 1: INPUT
@@ -91,9 +102,11 @@ def limpar_texto(texto: str) -> str:
     return texto
 
 # ======================================================
-# ETAPA 2: NLP (BATCH)
+# ETAPA 3: NLP (BATCH)
 # ======================================================
 def processar_textos(textos):
+    nlp, stop_words = get_nlp()
+
     docs = nlp.pipe(textos, batch_size=50)
     tokens_processados = []
 
