@@ -3,4 +3,3 @@ pandas
 matplotlib
 spacy
 wordcloud
-https://github.com
