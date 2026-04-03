@@ -1,13 +1,11 @@
 streamlit>=1.32,<2.0
 numpy>=1.26,<2.0
 matplotlib>=3.8,<3.9
-pandas
 spacy>=3.7,<3.8
 textblob>=0.18,<0.19
 wordcloud
 reportlab
-requests
+requests<3
 urllib3<2.1
 
-# Modelo spaCy (instalado como pacote)
 pt-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/pt_core_news_sm-3.7.0/pt_core_news_sm-3.7.0-py3-none-any.whl
