@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from pipeline import carregar_textos, pipeline
+
+# Imports pesados com cache
 from wordcloud import WordCloud
 from io import BytesIO
 
@@ -10,10 +11,19 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 
+# Pipeline (importar aqui, mas funções pesadas com cache)
+from pipeline import carregar_textos, pipeline
+
 # ======================================================
 # CONFIGURAÇÃO
 # ======================================================
-st.set_page_config(page_title="LexInsight", layout="wide")
+st.set_page_config(
+    page_title="LexInsight",
+    layout="wide",
+    page_icon="⚖️",
+    initial_sidebar_state="expanded"
+)
+
 st.title("⚖️ LexInsight — Análise de Sentimento Textual")
 
 # ======================================================
