@@ -1,5 +1,7 @@
 # ⚖️ LexInsight: Sentimento & Dados
 
+🔗 Este módulo faz parte do ecossistema LexOS.
+
 > Transformando linguagem jurídica em inteligência estratégica por meio de NLP e análise orientada a dados.
 
 ---
